@@ -1,5 +1,6 @@
-package com.kylin.konwledge_base.config;
+package com.kylin.knowledge_base.config;
 
+import org.mybatis.spring.annotation.MapperScan;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
@@ -10,12 +11,13 @@ import org.springframework.core.env.Environment;
 // @ComponentScan({"com.kylin", "com.test"})
 @ComponentScan("com.kylin")
 @SpringBootApplication
-public class KyLinKonwledgeBaseApplication {
+@MapperScan("com.kylin.knowledge_base.mapper")
+public class KyLinKnowledgeBaseApplication {
 
-    private static final Logger LOG = LoggerFactory.getLogger(KyLinKonwledgeBaseApplication.class);
+    private static final Logger LOG = LoggerFactory.getLogger(KyLinKnowledgeBaseApplication.class);
 
     public static void main(String[] args) {
-        SpringApplication app = new SpringApplication(KyLinKonwledgeBaseApplication.class);
+        SpringApplication app = new SpringApplication(KyLinKnowledgeBaseApplication.class);
         Environment env = app.run(args).getEnvironment();
         LOG.info("启动成功！！");
         LOG.info("地址: \thttp://127.0.0.1:{}", env.getProperty("server.port"));
