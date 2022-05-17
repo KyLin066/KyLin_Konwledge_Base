@@ -3,13 +3,11 @@
     <a-layout-sider width="200" style="background: #fff">
       <a-menu
           mode="inline"
-          v-model:selectedKeys="selectedKeys2"
-          v-model:openKeys="openKeys"
           :style="{ height: '100%', borderRight: 0 }"
       >
         <a-sub-menu key="sub1">
           <template #title>
-            <span><user-outlined />subnav 11111</span>
+            <span><user-outlined/>subnav 11111</span>
           </template>
           <a-menu-item key="1">option1</a-menu-item>
           <a-menu-item key="2">option2</a-menu-item>
@@ -18,7 +16,7 @@
         </a-sub-menu>
         <a-sub-menu key="sub2">
           <template #title>
-            <span><laptop-outlined />subnav 2</span>
+            <span><laptop-outlined/>subnav 2</span>
           </template>
           <a-menu-item key="5">option5</a-menu-item>
           <a-menu-item key="6">option6</a-menu-item>
@@ -27,7 +25,7 @@
         </a-sub-menu>
         <a-sub-menu key="sub3">
           <template #title>
-            <span><notification-outlined />subnav 3</span>
+            <span><notification-outlined/>subnav 3</span>
           </template>
           <a-menu-item key="9">option9</a-menu-item>
           <a-menu-item key="10">option10</a-menu-item>
@@ -45,11 +43,16 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import {defineComponent} from 'vue';
+import axios from 'axios'; //导入HTTP库axios
 
 export default defineComponent({
   name: 'Home',
-  components: {
-  },
+  setup() { //Vue3新增的初始化方法
+    console.log("setup");
+    axios.get("http://localhost:8080/ebook/list?name=Spring").then((response) => {
+      console.log(response);
+    })
+  }
 });
 </script>
