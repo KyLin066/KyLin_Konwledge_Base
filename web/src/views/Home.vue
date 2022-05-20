@@ -86,7 +86,8 @@ export default defineComponent({
     const ebooks1 = reactive({books: []}); //响应式数据
 
     onMounted(() => {
-      axios.get("http://localhost:8080/ebook/list").then((response) => {
+      console.log("onMounted1111");
+      axios.get(process.env.VUE_APP_SERVER + "/ebook/list").then((response) => {
         const data = response.data;
         ebooks.value = data.content;
         ebooks1.books = data.content;
@@ -116,11 +117,11 @@ export default defineComponent({
 
 <!--scoped表示只在当前页面生效-->
 <style scoped>
-  .ant-avatar {
-    width: 50px;
-    height: 50px;
-    line-height: 50px;
-    border-radius: 8%;
-    margin: 5px 0;
-  }
+.ant-avatar {
+  width: 50px;
+  height: 50px;
+  line-height: 50px;
+  border-radius: 8%;
+  margin: 5px 0;
+}
 </style>
