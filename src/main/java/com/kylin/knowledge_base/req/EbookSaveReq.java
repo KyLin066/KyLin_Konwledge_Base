@@ -1,6 +1,6 @@
-package com.kylin.knowledge_base.resp;
+package com.kylin.knowledge_base.req;
 
-public class EbookResp {
+public class EbookSaveReq {
     private Long id;
 
     private String name;

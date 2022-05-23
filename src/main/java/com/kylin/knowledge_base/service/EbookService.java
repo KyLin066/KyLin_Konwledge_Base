@@ -5,8 +5,9 @@ import com.github.pagehelper.PageInfo;
 import com.kylin.knowledge_base.domain.Ebook;
 import com.kylin.knowledge_base.domain.EbookExample;
 import com.kylin.knowledge_base.mapper.EbookMapper;
-import com.kylin.knowledge_base.req.EbookReq;
-import com.kylin.knowledge_base.resp.EbookResp;
+import com.kylin.knowledge_base.req.EbookQueryReq;
+import com.kylin.knowledge_base.req.EbookSaveReq;
+import com.kylin.knowledge_base.resp.EbookQueryResp;
 import com.kylin.knowledge_base.resp.PageResp;
 import com.kylin.knowledge_base.util.CopyUtil;
 import org.slf4j.Logger;
@@ -24,7 +25,7 @@ public class EbookService {
     @Resource
     private EbookMapper ebookMapper;
 
-    public PageResp<EbookResp> list(EbookReq req) {
+    public PageResp<EbookQueryResp> list(EbookQueryReq req) {
         EbookExample ebookExample = new EbookExample();
         EbookExample.Criteria criteria = ebookExample.createCriteria();
         if (!ObjectUtils.isEmpty(req.getName())) {
@@ -47,12 +48,26 @@ public class EbookService {
 //        }
 
         //列表复制
-        List<EbookResp> list = CopyUtil.copyList(ebookList, EbookResp.class);
+        List<EbookQueryResp> list = CopyUtil.copyList(ebookList, EbookQueryResp.class);
 
-        PageResp<EbookResp> pageResp = new PageResp();
+        PageResp<EbookQueryResp> pageResp = new PageResp();
         pageResp.setTotal(pageInfo.getTotal());
         pageResp.setList(list);
 
         return pageResp;
+    }
+
+    /**
+     * 保存
+     */
+    public void save(EbookSaveReq req) {
+        Ebook ebook = CopyUtil.copy(req, Ebook.class);
+        if (ObjectUtils.isEmpty(req.getId())){
+            //新增
+            ebookMapper.insert(ebook);
+        }else {
+            //更新
+            ebookMapper.updateByPrimaryKey(ebook);
+        }
     }
 }
