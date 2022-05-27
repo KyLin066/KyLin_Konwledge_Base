@@ -1,6 +1,6 @@
 <template>
   <a-layout-footer style="text-align: center">
-    KyLin知识库1111
+    KyLin知识库
   </a-layout-footer>
 </template>
 
