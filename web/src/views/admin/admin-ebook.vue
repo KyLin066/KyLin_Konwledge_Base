@@ -35,7 +35,7 @@
         </template>
         <template v-slot:action="{ text, record }">
           <a-space size="small">
-            <router-link to="/admin/doc">
+            <router-link :to="'/admin/doc?ebookId='+record.id">
               <a-button type="primary">
                 文档管理
               </a-button>
@@ -114,7 +114,7 @@ export default defineComponent({
       },
       {
         title: '分类',
-        slots: { customRender: 'category' }
+        slots: {customRender: 'category'}
       },
       {
         title: '文档数',
@@ -230,7 +230,7 @@ export default defineComponent({
       });
     }
 
-    const level1 =  ref();
+    const level1 = ref();
     let categorys: any;
     /**
      * 查询所有分类
