@@ -2,8 +2,10 @@ package com.kylin.knowledge_base.service;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.kylin.knowledge_base.domain.Content;
 import com.kylin.knowledge_base.domain.Doc;
 import com.kylin.knowledge_base.domain.DocExample;
+import com.kylin.knowledge_base.mapper.ContentMapper;
 import com.kylin.knowledge_base.mapper.DocMapper;
 import com.kylin.knowledge_base.req.DocQueryReq;
 import com.kylin.knowledge_base.req.DocSaveReq;
@@ -25,6 +27,9 @@ public class DocService {
 
     @Resource
     private DocMapper docMapper;
+
+    @Resource
+    private ContentMapper contentMapper;
 
     @Resource
     private SnowFlake snowFlake;
@@ -75,21 +80,29 @@ public class DocService {
      */
     public void save(DocSaveReq req) {
         Doc doc = CopyUtil.copy(req, Doc.class);
-        if (ObjectUtils.isEmpty(req.getId())){
+        Content content = CopyUtil.copy(req, Content.class);
+        if (ObjectUtils.isEmpty(req.getId())) {
             //新增
             doc.setId(snowFlake.nextId());
             docMapper.insert(doc);
-        }else {
+
+            content.setId(doc.getId());
+            contentMapper.insert(content);
+        } else {
             //更新
             docMapper.updateByPrimaryKey(doc);
+            int count = contentMapper.updateByPrimaryKeyWithBLOBs(content);
+            if (count==0){
+                contentMapper.insert(content);
+            }
         }
     }
 
-    public void delete(Long id){
+    public void delete(Long id) {
         docMapper.deleteByPrimaryKey(id);
     }
 
-    public void delete(List<String> ids){
+    public void delete(List<String> ids) {
         DocExample docExample = new DocExample();
         DocExample.Criteria criteria = docExample.createCriteria();
         criteria.andIdIn(ids);
