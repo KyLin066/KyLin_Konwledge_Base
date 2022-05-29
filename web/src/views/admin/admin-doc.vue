@@ -27,8 +27,7 @@
               :loading="loading"
               :pagination="false"
               size="small"
-              :defaultExpandAllRows="true"
-          >
+              :defaultExpandAllRows="true">
             <template #name="{ text, record }">
               {{ record.sort }} {{ text }}
             </template>
@@ -41,8 +40,7 @@
                     title="删除后不可恢复，确认删除?"
                     ok-text="是"
                     cancel-text="否"
-                    @confirm="handleDelete(record.id)"
-                >
+                    @confirm="handleDelete(record.id)">
                   <a-button type="danger" size="small">
                     删除
                   </a-button>
@@ -73,12 +71,16 @@
                   :tree-data="treeSelectData"
                   placeholder="请选择父文档"
                   tree-default-expand-all
-                  :replaceFields="{title: 'name', key: 'id', value: 'id'}"
-              >
+                  :replaceFields="{title: 'name', key: 'id', value: 'id'}">
               </a-tree-select>
             </a-form-item>
             <a-form-item>
               <a-input v-model:value="doc.sort" placeholder="顺序"/>
+            </a-form-item>
+            <a-form-item>
+              <a-button type="primary" @click="handlePreviewContent()">
+                <EyeOutlined /> 内容预览
+              </a-button>
             </a-form-item>
             <a-form-item>
               <div id="content"></div>
@@ -86,6 +88,10 @@
           </a-form>
         </a-col>
       </a-row>
+
+      <a-drawer width="900" placement="right" :closable="false" :visible="drawerVisible" @close="onDrawerClose">
+        <div class="wangeditor" :innerHTML="previewHtml"></div>
+      </a-drawer>
 
     </a-layout-content>
   </a-layout>
@@ -343,6 +349,18 @@ export default defineComponent({
       });
     }
 
+    // ----------------富文本预览--------------
+    const drawerVisible = ref(false);
+    const previewHtml = ref();
+    const handlePreviewContent = () => {
+      const html = editor.txt.html();
+      previewHtml.value = html;
+      drawerVisible.value = true;
+    };
+    const onDrawerClose = () => {
+      drawerVisible.value = false;
+    };
+
     onMounted(() => {
       handleQuery();
       editor.create();
@@ -367,7 +385,12 @@ export default defineComponent({
       modalLoading,
       handleSave,
       handleDelete,
-      treeSelectData
+      treeSelectData,
+
+      drawerVisible,
+      previewHtml,
+      handlePreviewContent,
+      onDrawerClose,
     }
   }
 });
