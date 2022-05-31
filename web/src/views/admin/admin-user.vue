@@ -5,7 +5,7 @@
       <p>
         <a-form layout="inline" :model="param">
           <a-form-item>
-            <a-input v-model:value="param.loginName" placeholder="登陆名">
+            <a-input v-model:value="param.loginName" placeholder="登录名">
             </a-input>
           </a-form-item>
           <a-form-item>
@@ -72,6 +72,9 @@ import axios from 'axios';
 import {message} from 'ant-design-vue';
 import {Tool} from "@/util/tool";
 
+declare let hexMd5: any;
+declare let KEY: any;
+
 export default defineComponent({
   name: 'AdminUser',
   setup() {
@@ -87,7 +90,7 @@ export default defineComponent({
 
     const columns = [
       {
-        title: '登陆名',
+        title: '登录名',
         dataIndex: 'loginName'
       },
       {
@@ -150,6 +153,7 @@ export default defineComponent({
     const modalLoading = ref(false);
     const handleModalOk = () => {
       modalLoading.value = true;
+      user.value.password = hexMd5(user.value.password + KEY);
       axios.post("/user/save", user.value).then((response) => {
         modalLoading.value = false;
         const data = response.data; // data = commonResp
