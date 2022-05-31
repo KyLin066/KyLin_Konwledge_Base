@@ -8,6 +8,7 @@ import com.kylin.knowledge_base.exception.BusinessException;
 import com.kylin.knowledge_base.exception.BusinessExceptionCode;
 import com.kylin.knowledge_base.mapper.UserMapper;
 import com.kylin.knowledge_base.req.UserQueryReq;
+import com.kylin.knowledge_base.req.UserResetPasswordReq;
 import com.kylin.knowledge_base.req.UserSaveReq;
 import com.kylin.knowledge_base.resp.PageResp;
 import com.kylin.knowledge_base.resp.UserQueryResp;
@@ -84,6 +85,7 @@ public class UserService {
         } else {
             // 更新
             user.setLoginName(null);
+            user.setPassword(null);
             userMapper.updateByPrimaryKeySelective(user);
         }
     }
@@ -102,5 +104,13 @@ public class UserService {
         } else {
             return userList.get(0);
         }
+    }
+
+    /**
+     * 修改密码
+     */
+    public void resetPassword(UserResetPasswordReq req) {
+        User user = CopyUtil.copy(req, User.class);
+        userMapper.updateByPrimaryKeySelective(user);
     }
 }

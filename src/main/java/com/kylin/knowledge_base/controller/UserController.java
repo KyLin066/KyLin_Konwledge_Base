@@ -1,6 +1,7 @@
 package com.kylin.knowledge_base.controller;
 
 import com.kylin.knowledge_base.req.UserQueryReq;
+import com.kylin.knowledge_base.req.UserResetPasswordReq;
 import com.kylin.knowledge_base.req.UserSaveReq;
 import com.kylin.knowledge_base.resp.CommonResp;
 import com.kylin.knowledge_base.resp.PageResp;
@@ -39,6 +40,14 @@ public class UserController {
     public CommonResp delete(@PathVariable Long id) {
         CommonResp resp = new CommonResp<>();
         userService.delete(id);
+        return resp;
+    }
+
+    @PostMapping("/reset-password")
+    public CommonResp resetPassword(@Valid @RequestBody UserResetPasswordReq req) {
+        req.setPassword(DigestUtils.md5DigestAsHex(req.getPassword().getBytes()));
+        CommonResp resp = new CommonResp<>();
+        userService.resetPassword(req);
         return resp;
     }
 }
