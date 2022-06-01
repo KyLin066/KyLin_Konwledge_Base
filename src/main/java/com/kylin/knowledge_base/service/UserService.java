@@ -7,10 +7,12 @@ import com.kylin.knowledge_base.domain.UserExample;
 import com.kylin.knowledge_base.exception.BusinessException;
 import com.kylin.knowledge_base.exception.BusinessExceptionCode;
 import com.kylin.knowledge_base.mapper.UserMapper;
+import com.kylin.knowledge_base.req.UserLoginReq;
 import com.kylin.knowledge_base.req.UserQueryReq;
 import com.kylin.knowledge_base.req.UserResetPasswordReq;
 import com.kylin.knowledge_base.req.UserSaveReq;
 import com.kylin.knowledge_base.resp.PageResp;
+import com.kylin.knowledge_base.resp.UserLoginResp;
 import com.kylin.knowledge_base.resp.UserQueryResp;
 import com.kylin.knowledge_base.util.CopyUtil;
 import com.kylin.knowledge_base.util.SnowFlake;
@@ -112,5 +114,27 @@ public class UserService {
     public void resetPassword(UserResetPasswordReq req) {
         User user = CopyUtil.copy(req, User.class);
         userMapper.updateByPrimaryKeySelective(user);
+    }
+
+    /**
+     * 登录
+     */
+    public UserLoginResp login(UserLoginReq req) {
+        User userDb = selectByLoginName(req.getLoginName());
+        if (ObjectUtils.isEmpty(userDb)) {
+            // 用户名不存在
+            LOG.info("用户名不存在, {}", req.getLoginName());
+            throw new BusinessException(BusinessExceptionCode.LOGIN_USER_ERROR);
+        } else {
+            if (userDb.getPassword().equals(req.getPassword())) {
+                // 登录成功
+                UserLoginResp userLoginResp = CopyUtil.copy(userDb, UserLoginResp.class);
+                return userLoginResp;
+            } else {
+                // 密码不对
+                LOG.info("密码不对, 输入密码：{}, 数据库密码：{}", req.getPassword(), userDb.getPassword());
+                throw new BusinessException(BusinessExceptionCode.LOGIN_USER_ERROR);
+            }
+        }
     }
 }
