@@ -5,8 +5,7 @@
         title="确认退出登录?"
         ok-text="是"
         cancel-text="否"
-        @confirm="logout()"
-    >
+        @confirm="logout()">
       <a class="login-menu" v-show="user.id">
         <span>退出登录</span>
       </a>
@@ -24,13 +23,13 @@
       <a-menu-item key="/">
         <router-link to="/">首页</router-link>
       </a-menu-item>
-      <a-menu-item key="/admin/user">
+      <a-menu-item key="/admin/user" v-if="user.id">
         <router-link to="/admin/user">用户管理</router-link>
       </a-menu-item>
-      <a-menu-item key="/admin/ebook">
+      <a-menu-item key="/admin/ebook" v-if="user.id">
         <router-link to="/admin/ebook">电子书管理</router-link>
       </a-menu-item>
-      <a-menu-item key="/admin/category">
+      <a-menu-item key="/admin/category" v-if="user.id">
         <router-link to="/admin/category">分类管理</router-link>
       </a-menu-item>
       <a-menu-item key="/about">
