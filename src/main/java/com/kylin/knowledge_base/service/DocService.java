@@ -5,6 +5,8 @@ import com.github.pagehelper.PageInfo;
 import com.kylin.knowledge_base.domain.Content;
 import com.kylin.knowledge_base.domain.Doc;
 import com.kylin.knowledge_base.domain.DocExample;
+import com.kylin.knowledge_base.exception.BusinessException;
+import com.kylin.knowledge_base.exception.BusinessExceptionCode;
 import com.kylin.knowledge_base.mapper.ContentMapper;
 import com.kylin.knowledge_base.mapper.DocMapper;
 import com.kylin.knowledge_base.mapper.DocMapperCust;
@@ -13,6 +15,8 @@ import com.kylin.knowledge_base.req.DocSaveReq;
 import com.kylin.knowledge_base.resp.DocQueryResp;
 import com.kylin.knowledge_base.resp.PageResp;
 import com.kylin.knowledge_base.util.CopyUtil;
+import com.kylin.knowledge_base.util.RedisUtil;
+import com.kylin.knowledge_base.util.RequestContext;
 import com.kylin.knowledge_base.util.SnowFlake;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,6 +41,9 @@ public class DocService {
 
     @Resource
     private SnowFlake snowFlake;
+
+    @Resource
+    public RedisUtil redisUtil;
 
     public List<DocQueryResp> all(Long ebookId) {
         DocExample docExample = new DocExample();
@@ -124,6 +131,20 @@ public class DocService {
             return "";
         } else {
             return content.getContent();
+        }
+    }
+
+    /**
+     * 点赞
+     */
+    public void vote(Long id) {
+        // docMapperCust.increaseVoteCount(id);
+        // 远程IP+doc.id作为key，24小时内不能重复
+        String ip = RequestContext.getRemoteAddr();
+        if (redisUtil.validateRepeat("DOC_VOTE_" + id + "_" + ip, 3600 * 24)) {
+            docMapperCust.increaseVoteCount(id);
+        } else {
+            throw new BusinessException(BusinessExceptionCode.VOTE_REPEAT);
         }
     }
 }
