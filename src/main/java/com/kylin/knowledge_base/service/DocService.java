@@ -7,6 +7,7 @@ import com.kylin.knowledge_base.domain.Doc;
 import com.kylin.knowledge_base.domain.DocExample;
 import com.kylin.knowledge_base.mapper.ContentMapper;
 import com.kylin.knowledge_base.mapper.DocMapper;
+import com.kylin.knowledge_base.mapper.DocMapperCust;
 import com.kylin.knowledge_base.req.DocQueryReq;
 import com.kylin.knowledge_base.req.DocSaveReq;
 import com.kylin.knowledge_base.resp.DocQueryResp;
@@ -27,6 +28,9 @@ public class DocService {
 
     @Resource
     private DocMapper docMapper;
+
+    @Resource
+    private DocMapperCust docMapperCust;
 
     @Resource
     private ContentMapper contentMapper;
@@ -85,6 +89,8 @@ public class DocService {
         if (ObjectUtils.isEmpty(req.getId())) {
             //新增
             doc.setId(snowFlake.nextId());
+            doc.setViewCount(0);
+            doc.setVoteCount(0);
             docMapper.insert(doc);
 
             content.setId(doc.getId());
@@ -112,6 +118,8 @@ public class DocService {
 
     public String findContent(Long id) {
         Content content = contentMapper.selectByPrimaryKey(id);
+        // 文档阅读数+1
+        docMapperCust.increaseViewCount(id);
         if (ObjectUtils.isEmpty(content)) {
             return "";
         } else {
