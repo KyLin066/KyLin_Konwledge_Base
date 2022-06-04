@@ -1,8 +1,10 @@
 package com.kylin.knowledge_base.job;
 
 import com.kylin.knowledge_base.service.DocService;
+import com.kylin.knowledge_base.util.SnowFlake;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -16,11 +18,16 @@ public class DocJob {
     @Resource
     private DocService docService;
 
+    @Resource
+    private SnowFlake snowFlake;
+
     /**
      * 每5秒更新电子书信息
      */
     @Scheduled(cron = "1/5 * * * * ?")
     public void cron() {
+        // 增加日志流水号
+        MDC.put("LOG_ID", String.valueOf(snowFlake.nextId()));
         LOG.info("更新电子书下的文档数据开始");
         long start = System.currentTimeMillis();
         docService.updateEbookInfo();
