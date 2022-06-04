@@ -65,6 +65,12 @@
         </dependency>
         <!--**********SpringBoot AOP依赖**********-->
 
+        <!--集成WebSocket-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-websocket</artifactId>
+        </dependency>
+
         <!--Validation参数校验依赖-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
