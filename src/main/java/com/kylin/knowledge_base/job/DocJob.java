@@ -17,9 +17,9 @@ public class DocJob {
     private DocService docService;
 
     /**
-     * 每30秒更新电子书信息
+     * 每5秒更新电子书信息
      */
-    @Scheduled(cron = "5/30 * * * * ?")
+    @Scheduled(cron = "1/5 * * * * ?")
     public void cron() {
         LOG.info("更新电子书下的文档数据开始");
         long start = System.currentTimeMillis();
